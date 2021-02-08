@@ -1,0 +1,16 @@
+*.log
+*.tmp
+*.bak
+*.old
+__pycache__
+.vscode/
+dist/
+build/
+_build/
+*.egg-info/
+coverage.xml
+.coverage
+.tox/
+htmlcov/
+todos.md
+.mypy_cache
