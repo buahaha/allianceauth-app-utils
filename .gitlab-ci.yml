@@ -28,6 +28,18 @@ test-3.6:
     - cd utils-test-app
     - tox -e py36-django31
 
+test-3.7:
+  image: python:3.7-buster
+  script:
+    - cd utils-test-app
+    - tox -e py37-django31
+
+test-3.8:
+  image: python:3.8-buster
+  script:
+    - cd utils-test-app
+    - tox -e py38-django31
+
 deploy-pypi:
   stage: deploy
   image: python:3.7-buster
