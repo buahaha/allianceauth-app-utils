@@ -18,11 +18,12 @@ class ObjectCacheMixin:
         """Will return the requested object either from DB or from cache
 
         Args:
-        - pk: Primary key for object to fetch
-        - timeout: Timeout in seconds for cache
-        - select_related: select_related query to be applied (if any)
+            pk: Primary key for object to fetch
+            timeout: Timeout in seconds for cache
+            select_related: select_related query to be applied (if any)
+
         Exceptions:
-        - raised Model.DoesNotExist if object can not be found
+            ``Model.DoesNotExist`` if object can not be found
         """
         func = functools.partial(
             self._fetch_object_for_cache, pk=pk, select_related=select_related
@@ -52,4 +53,5 @@ class ObjectCacheMixin:
 def cached_queryset(
     queryset: models.QuerySet, key: str, timeout: Union[int, float]
 ) -> models.QuerySet:
+    """caches the given queryset"""
     return cache.get_or_set(key, lambda: queryset, timeout)

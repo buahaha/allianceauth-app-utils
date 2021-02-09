@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+import datetime as dt
 
 from django.utils.translation import gettext_lazy as _
 
@@ -7,22 +7,24 @@ from django.utils.translation import gettext_lazy as _
 DATETIME_FORMAT = "%Y-%m-%d %H:%M"
 
 
-def datetime_round_hour(obj) -> datetime:
-    """Rounds to nearest hour"""
-    return obj.replace(second=0, microsecond=0, minute=0, hour=obj.hour) + timedelta(
-        hours=obj.minute // 30
-    )
+def datetime_round_hour(my_dt: dt) -> dt:
+    """Rounds given datetime object to nearest hour"""
+    return my_dt.replace(
+        second=0, microsecond=0, minute=0, hour=my_dt.hour
+    ) + dt.timedelta(hours=my_dt.minute // 30)
 
 
-def dt_eveformat(dt: object) -> str:
+def dt_eveformat(my_dt: object) -> str:
     """converts a datetime to a string in eve format
     e.g. '2019-06-25T19:04:44'
     """
-    dt2 = datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
-    return dt2.isoformat()
+    my_dt_2 = dt.datetime(
+        my_dt.year, my_dt.month, my_dt.day, my_dt.hour, my_dt.minute, my_dt.second
+    )
+    return my_dt_2.isoformat()
 
 
-def timeuntil_str(duration: timedelta) -> str:
+def timeuntil_str(duration: dt.timedelta) -> str:
     """return the duration as nicely formatted string.
     Or empty string if duration is negative.
 
