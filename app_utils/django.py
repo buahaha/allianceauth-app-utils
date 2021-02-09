@@ -108,16 +108,26 @@ def clean_setting(
     return cleaned_value
 
 
-def users_with_permission(permission: Permission) -> models.QuerySet:
-    """returns queryset of users that have the given Django permission"""
+def users_with_permission(
+    permission: Permission, include_superusers=True
+) -> models.QuerySet:
+    """returns queryset of users that have the given Django permission
+
+    Args:
+        permission: required permission
+        include_superusers: whether superusers are includes in the returned list
+    """
+    filters = (
+        Q(user_permissions=permission)
+        | Q(groups__permissions=permission)
+        | Q(profile__state__permissions=permission)
+    )
+    if include_superusers:
+        filters |= Q(is_superuser=True)
     return (
         User.objects.prefetch_related(
             "user_permissions", "groups", "profile__state__permissions"
         )
-        .filter(
-            Q(user_permissions=permission)
-            | Q(groups__permissions=permission)
-            | Q(profile__state__permissions=permission)
-        )
+        .filter(filters)
         .distinct()
     )

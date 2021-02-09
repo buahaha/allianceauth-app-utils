@@ -461,29 +461,51 @@ class TestUsersWithPermissionQS(NoSocketsTestCase):
     def setUp(self) -> None:
         self.user_1 = AuthUtils.create_user("Bruce Wayne")
         self.user_2 = AuthUtils.create_user("Lex Luther")
+        self.user_3 = User.objects.create_superuser("Spiderman")
 
     @classmethod
-    def user_with_permission_pks(cls) -> set:
-        return set(users_with_permission(cls.permission).values_list("pk", flat=True))
+    def user_with_permission_pks(cls, include_superusers=True) -> set:
+        return set(
+            users_with_permission(
+                cls.permission, include_superusers=include_superusers
+            ).values_list("pk", flat=True)
+        )
 
-    def test_user_permission(self):
-        """direct user permissions"""
+    def test_should_return_users_with_user_permission(self):
+        # given
         AuthUtils.add_permissions_to_user([self.permission], self.user_1)
-        self.assertSetEqual(self.user_with_permission_pks(), {self.user_1.pk})
+        # when
+        result = self.user_with_permission_pks()
+        # then
+        self.assertSetEqual(result, {self.user_1.pk, self.user_3.pk})
+
+    def test_should_return_users_with_user_permission_excluding_superusers(self):
+        # given
+        AuthUtils.add_permissions_to_user([self.permission], self.user_1)
+        # when
+        result = self.user_with_permission_pks(include_superusers=False)
+        # then
+        self.assertSetEqual(result, {self.user_1.pk})
 
     def test_group_permission(self):
         """group permissions"""
         self.user_1.groups.add(self.group)
-        self.assertSetEqual(self.user_with_permission_pks(), {self.user_1.pk})
+        self.assertSetEqual(
+            self.user_with_permission_pks(), {self.user_1.pk, self.user_3.pk}
+        )
 
     def test_state_permission(self):
         """state permissions"""
         AuthUtils.assign_state(self.user_1, self.state, disconnect_signals=True)
-        self.assertSetEqual(self.user_with_permission_pks(), {self.user_1.pk})
+        self.assertSetEqual(
+            self.user_with_permission_pks(), {self.user_1.pk, self.user_3.pk}
+        )
 
     def test_distinct_qs(self):
         """only return one user object, despiste multiple matches"""
         AuthUtils.add_permissions_to_user([self.permission], self.user_1)
         self.user_1.groups.add(self.group)
         AuthUtils.assign_state(self.user_1, self.state, disconnect_signals=True)
-        self.assertSetEqual(self.user_with_permission_pks(), {self.user_1.pk})
+        self.assertSetEqual(
+            self.user_with_permission_pks(), {self.user_1.pk, self.user_3.pk}
+        )
