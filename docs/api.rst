@@ -29,14 +29,15 @@ helpers
 json
 ========
 
-.. automodule:: app_utils.json
-    :members:
+.. autoclass:: app_utils.json.JSONDateTimeDecoder
+
+.. autoclass:: app_utils.json.JSONDateTimeEncoder
 
 logging
 ========
 
-.. automodule:: app_utils.logging
-    :members:
+.. autoclass:: app_utils.logging.LoggerAddTag
+.. autofunction:: app_utils.logging.make_logger_prefix
 
 messages
 ========
@@ -47,8 +48,15 @@ messages
 testing
 ========
 
-.. automodule:: app_utils.testing
-    :members:
+.. autofunction:: app_utils.testing.add_character_to_user
+.. autofunction:: app_utils.testing.add_character_to_user_2
+.. autofunction:: app_utils.testing.add_new_token
+.. autoclass:: app_utils.testing.BravadoOperationStub
+.. autoclass:: app_utils.testing.BravadoResponseStub
+.. autofunction:: app_utils.testing.generate_invalid_pk
+.. autoclass:: app_utils.testing.NoSocketsTestCase
+.. autofunction:: app_utils.testing.queryset_pks
+.. autofunction:: app_utils.testing.set_test_logger
 
 urls
 ========

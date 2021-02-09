@@ -7,14 +7,14 @@ from django.utils.translation import gettext_lazy as _
 DATETIME_FORMAT = "%Y-%m-%d %H:%M"
 
 
-def datetime_round_hour(my_dt: dt) -> dt:
+def datetime_round_hour(my_dt: dt.datetime) -> dt.datetime:
     """Rounds given datetime object to nearest hour"""
     return my_dt.replace(
         second=0, microsecond=0, minute=0, hour=my_dt.hour
     ) + dt.timedelta(hours=my_dt.minute // 30)
 
 
-def dt_eveformat(my_dt: object) -> str:
+def dt_eveformat(my_dt: dt.datetime) -> str:
     """converts a datetime to a string in eve format
     e.g. '2019-06-25T19:04:44'
     """
@@ -28,7 +28,7 @@ def timeuntil_str(duration: dt.timedelta) -> str:
     """return the duration as nicely formatted string.
     Or empty string if duration is negative.
 
-    Format: '[[[999y] [99m]] 99d] 99h 99m 99s'
+    Format: ``'[[[999y] [99m]] 99d] 99h 99m 99s'``
     """
     seconds = int(duration.total_seconds())
     if seconds > 0:

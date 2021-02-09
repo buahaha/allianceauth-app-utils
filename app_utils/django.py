@@ -32,14 +32,26 @@ def clean_setting(
     Will use minimum or maximum value if respective boundary is exceeded.
 
     Args:
-    - `default_value`: value to use if setting is not defined
-    - `min_value`: minimum allowed value (0 assumed for int)
-    - `max_value`: maximum value value
-    - `required_type`: Mandatory if `default_value` is `None`,
-    otherwise derived from default_value
+        default_value: value to use if setting is not defined
+        min_value: minimum allowed value (0 assumed for int)
+        max_value: maximum value value
+        required_type: Mandatory if `default_value` is `None`,
+        otherwise derived from default_value
 
     Returns:
-    - cleaned value for setting
+        cleaned value for setting
+
+    This function is designed to be used in a dedicated module like ``app_settings.py``
+    as layer between the actual settings and all other modules.
+    ``app_settings.py`` will import and clean all settings and all other modules are supposed to import the settings it.
+
+    Example for app_settings:
+
+    .. code-block:: python
+
+        from app_utils.django import clean_setting
+
+        EXAMPLE_SETTING = clean_setting("EXAMPLE_SETTING", 10)
     """
     if default_value is None and not required_type:
         raise ValueError("You must specify a required_type for None defaults")

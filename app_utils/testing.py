@@ -51,11 +51,11 @@ def set_test_logger(logger_name: str, name: str) -> object:
     """set logger for current test module
 
     Args:
-    - logger: current logger object
-    - name: name of current module, e.g. __file__
+        logger: current logger object
+        name: name of current module, e.g. __file__
 
     Returns:
-    - amended logger
+        amended logger
     """
 
     # reconfigure logger so we get logging from tested module

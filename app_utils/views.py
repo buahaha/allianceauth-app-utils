@@ -18,6 +18,7 @@ def bootstrap_label_html(text: str, label: str = "default") -> str:
 
 # old: create_bs_glyph_html
 def bootstrap_glyph_html(glyph_name: str) -> str:
+    """returns a Bootstrap glyph HTML"""
     return format_html(
         '<span class="glyphicon glyphicon-{}"></span>', glyph_name.lower()
     )
@@ -25,6 +26,7 @@ def bootstrap_glyph_html(glyph_name: str) -> str:
 
 # old: create_bs_glyph_2_html
 def bootstrap_glyph_2_html(glyph_name, tooltip_text=None, color="initial"):
+    """returns a Bootstrap glyph HTML and can also have a tool tip and a color"""
     if tooltip_text:
         tooltip_html = mark_safe(
             'aria-hidden="true" data-toggle="tooltip" data-placement="top" '
@@ -95,7 +97,7 @@ def fontawesome_link_button_html(
 
 def humanize_value(value: float, precision: int = 2) -> str:
     """returns given value in human readable and abbreviated form
-    e.g. 1234678 -> 1.23m
+    e.g. ``1234678`` -> ``1.23m``
     """
     value = float(value)
     for exponent, identifier in [(12, "t"), (9, "b"), (6, "m"), (3, "k")]:
@@ -106,6 +108,7 @@ def humanize_value(value: float, precision: int = 2) -> str:
 
 
 def image_html(src: str, classes: list = None, size: int = None) -> str:
+    """returns the HTML for an image with optional classes and size"""
     classes_str = format_html('class="{}"', (" ".join(classes)) if classes else "")
     size_html = format_html('width="{}" height="{}"', size, size) if size else ""
     return format_html('<img {} {} src="{}">', classes_str, size_html, src)
