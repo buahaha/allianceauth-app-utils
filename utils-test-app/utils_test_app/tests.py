@@ -251,7 +251,7 @@ class TestHtmlHelper(TestCase):
             self.assertEqual(yesno_str("xxxx"), "no")
 
     def test_add_bs_label_html(self):
-        expected = '<div class="label label-danger">Dummy</div>'
+        expected = '<span class="label label-danger">Dummy</span>'
         self.assertEqual(bootstrap_label_html("Dummy", "danger"), expected)
 
     def test_create_link_html_default(self):
