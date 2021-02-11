@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.0.0a4] - 2021-02-11
+
+### Fixed
+
+- bootstrap labels are spans
+
 ## [1.0.0a3] - 2021-02-10
 
 ### Changed
