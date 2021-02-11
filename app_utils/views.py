@@ -13,7 +13,7 @@ format_html_lazy = lazy(format_html, str)
 # old: add_bs_label_html
 def bootstrap_label_html(text: str, label: str = "default") -> str:
     """create Bootstrap label and return HTML"""
-    return format_html('<div class="label label-{}">{}</div>', label, text)
+    return format_html('<span class="label label-{}">{}</span>', label, text)
 
 
 # old: create_bs_glyph_html
