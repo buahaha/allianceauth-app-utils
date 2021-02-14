@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.0.0a5] - 2021-02-14
+
+### Added
+
+- allianceauth.notify_admins
+- urls.reverse_absolute
+- urls.static_file_absolute_url
+
+### Changed
+
+- datetime.timeuntil_str: added show_seconds argument
+
 ## [1.0.0a4] - 2021-02-11
 
 ### Fixed

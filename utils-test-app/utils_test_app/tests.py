@@ -30,7 +30,7 @@ from app_utils.views import (
     bootstrap_label_html,
     humanize_value,
 )
-from app_utils.urls import get_site_base_url
+from app_utils.urls import site_absolute_url
 
 MODULE_PATH = "app_utils"
 CURRENT_PATH = "utils_test_app.tests"
@@ -312,7 +312,7 @@ class TestGetSiteBaseUrl(NoSocketsTestCase):
     )
     def test_return_url_if_url_defined_and_valid(self):
         expected = "https://www.mysite.com"
-        self.assertEqual(get_site_base_url(), expected)
+        self.assertEqual(site_absolute_url(), expected)
 
     @patch(
         MODULE_PATH + ".urls.settings.ESI_SSO_CALLBACK_URL",
@@ -320,13 +320,13 @@ class TestGetSiteBaseUrl(NoSocketsTestCase):
     )
     def test_return_dummy_if_url_defined_but_not_valid(self):
         expected = ""
-        self.assertEqual(get_site_base_url(), expected)
+        self.assertEqual(site_absolute_url(), expected)
 
     @patch(MODULE_PATH + ".urls.settings")
     def test_return_dummy_if_url_not_defined(self, mock_settings):
         delattr(mock_settings, "ESI_SSO_CALLBACK_URL")
         expected = ""
-        self.assertEqual(get_site_base_url(), expected)
+        self.assertEqual(site_absolute_url(), expected)
 
 
 class TestJsonSerializer(NoSocketsTestCase):

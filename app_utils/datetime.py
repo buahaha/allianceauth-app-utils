@@ -24,33 +24,34 @@ def dt_eveformat(my_dt: dt.datetime) -> str:
     return my_dt_2.isoformat()
 
 
-def timeuntil_str(duration: dt.timedelta) -> str:
+def timeuntil_str(duration: dt.timedelta, show_seconds=True) -> str:
     """return the duration as nicely formatted string.
     Or empty string if duration is negative.
 
-    Format: ``'[[[999y] [99m]] 99d] 99h 99m 99s'``
+    Format: '[[[999y] [99m]] 99d] 99h 99m 99s'
     """
     seconds = int(duration.total_seconds())
     if seconds > 0:
         periods = [
             # Translators: Abbreviation for years
-            (_("y"), 60 * 60 * 24 * 365, False),
+            (_("y"), 60 * 60 * 24 * 365, False, True),
             # Translators: Abbreviation for months
-            (_("mt"), 60 * 60 * 24 * 30, False),
+            (_("mt"), 60 * 60 * 24 * 30, False, True),
             # Translators: Abbreviation for days
-            (_("d"), 60 * 60 * 24, False),
+            (_("d"), 60 * 60 * 24, False, True),
             # Translators: Abbreviation for hours
-            (_("h"), 60 * 60, True),
+            (_("h"), 60 * 60, True, True),
             # Translators: Abbreviation for months
-            (_("m"), 60, True),
+            (_("m"), 60, True, True),
             # Translators: Abbreviation for seconds
-            (_("s"), 1, True),
+            (_("s"), 1, True, show_seconds),
         ]
         strings = list()
-        for period_name, period_seconds, period_static in periods:
+        for period_name, period_seconds, period_static, show in periods:
             if seconds >= period_seconds or period_static:
                 period_value, seconds = divmod(seconds, period_seconds)
-                strings.append("{}{}".format(period_value, period_name))
+                if show:
+                    strings.append("{}{}".format(period_value, period_name))
 
         result = " ".join(strings)
     else:

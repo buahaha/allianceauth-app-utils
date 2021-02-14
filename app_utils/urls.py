@@ -2,18 +2,21 @@ import re
 
 from urllib.parse import urljoin
 
-from django.urls import reverse
 from django.conf import settings
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.urls import reverse
 
 
-def get_absolute_url(url_name: str) -> str:
-    """Returns absolute URL for the given URL name."""
-    return urljoin(get_site_base_url(), reverse(url_name))
+# old: get_absolute_url
+def reverse_absolute(viewname: str) -> str:
+    """returns absolute URL for given url"""
+    return urljoin(site_absolute_url(), reverse(viewname))
 
 
 # TODO: Only enable for alliance auth
-def get_site_base_url() -> str:
-    """return base URL for this Alliance Auth site"""
+# old: get_site_base_url
+def site_absolute_url() -> str:
+    """return absolute URL for this Alliance Auth site"""
     try:
         match = re.match(r"(.+)\/sso\/callback", settings.ESI_SSO_CALLBACK_URL)
         if match:
@@ -22,3 +25,12 @@ def get_site_base_url() -> str:
         pass
 
     return ""
+
+
+def static_file_absolute_url(file_path: str) -> str:
+    """returns absolute URL to a static file
+
+    Args:
+        file_path: relative path to a static file
+    """
+    return urljoin(site_absolute_url(), staticfiles_storage.url(file_path))
