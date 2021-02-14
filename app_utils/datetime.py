@@ -1,4 +1,5 @@
 import datetime as dt
+import pytz
 
 from django.utils.translation import gettext_lazy as _
 
@@ -22,6 +23,18 @@ def dt_eveformat(my_dt: dt.datetime) -> str:
         my_dt.year, my_dt.month, my_dt.day, my_dt.hour, my_dt.minute, my_dt.second
     )
     return my_dt_2.isoformat()
+
+
+def ldap_time_2_datetime(ldap_dt: int) -> dt.datetime:
+    """converts ldap time to datetime.datetime"""
+    return pytz.utc.localize(
+        dt.datetime.utcfromtimestamp((ldap_dt / 10000000) - 11644473600)
+    )
+
+
+def ldap_timedelta_2_timedelta(ldap_td: int) -> dt.timedelta:
+    """converts a ldap time delta into a datetime.timedelta"""
+    return dt.timedelta(microseconds=ldap_td / 10)
 
 
 def timeuntil_str(duration: dt.timedelta, show_seconds=True) -> str:

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.0.0a6] - 2021-02-14
+
+### Added
+
+- datetime.ldap_time_2_datetime
+- datetime.ldap_timedelta_2_timedelta
+
 ## [1.0.0a5] - 2021-02-14
 
 ### Added
