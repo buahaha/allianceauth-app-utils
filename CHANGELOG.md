@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.0.0a7] - 2021-02-18
+
+### Added
+
+- allianceauth.is_night_mode
+- django.admin_boolean_icon_html
+
 ## [1.0.0a6] - 2021-02-14
 
 ### Added

@@ -6,8 +6,10 @@ from django.conf import settings
 from django.contrib.auth.models import User, Permission
 from django.db import models
 from django.db.models import Q
+from django.utils.html import format_html
 
 from .logging import LoggerAddTag
+from .urls import static_file_absolute_url
 
 
 logger = LoggerAddTag(logging.getLogger(__name__), __package__)
@@ -131,3 +133,20 @@ def users_with_permission(
         .filter(filters)
         .distinct()
     )
+
+
+def admin_boolean_icon_html(value) -> str:
+    """Variation of the admin boolean type, which returns the HTML for creating
+    the usual `True` and `False` icons.
+    But returns `None` for `None`, instead of the question mark."""
+
+    def make_html(icon_url: str, alt: str) -> str:
+        return format_html(f'<img src="{icon_url}" alt="{alt}">')
+
+    if value is True:
+        icon_url = static_file_absolute_url("admin/img/icon-yes.svg")
+        return make_html(icon_url, "True")
+    elif value is False:
+        icon_url = static_file_absolute_url("admin/img/icon-no.svg")
+        return make_html(icon_url, "False")
+    return None
