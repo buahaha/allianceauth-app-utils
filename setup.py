@@ -11,6 +11,11 @@ with open(os.path.join(this_directory, "README.md"), encoding="utf-8") as f:
 # allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
+on_rtd = os.environ.get("READTHEDOCS") == "True"
+if on_rtd:
+    INSTALL_REQUIRES = []
+else:
+    INSTALL_REQUIRES = ["allianceauth>=2.8.2"]
 
 setup(
     name="allianceauth-app-utils",
@@ -39,5 +44,5 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
     python_requires="~=3.6",
-    install_requires=["allianceauth>=2.8.2"],
+    install_requires=INSTALL_REQUIRES,
 )

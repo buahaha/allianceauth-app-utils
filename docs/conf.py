@@ -11,7 +11,7 @@ import sys
 import django
 
 sys.path.insert(0, os.path.abspath("../utils-test-app"))
-os.environ["DJANGO_SETTINGS_MODULE"] = "testauth.settings"
+os.environ["DJANGO_SETTINGS_MODULE"] = "testsite.settings"
 django.setup()
 
 
@@ -55,6 +55,10 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 master_doc = "index"
+
+# autodoc
+autodoc_mock_imports = ["allianceauth"]
+
 
 # -- Options for HTML output -------------------------------------------------
 
