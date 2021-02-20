@@ -2,6 +2,12 @@
 API
 ===============
 
+allianceauth
+============
+
+.. automodule:: app_utils.allianceauth
+    :members:
+
 caching
 =======
 
