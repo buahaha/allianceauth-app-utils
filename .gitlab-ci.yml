@@ -43,6 +43,12 @@ test-3.8:
     - tox -e py38-django31
     - bash <(curl -s https://codecov.io/bash)
 
+test-docs:
+  image: python:3.7-buster
+  script:
+    - cd utils-test-app
+    - tox -e docs
+
 deploy-pypi:
   stage: deploy
   image: python:3.7-buster
