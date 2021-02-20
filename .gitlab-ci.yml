@@ -27,18 +27,21 @@ test-3.6:
   script:
     - cd utils-test-app
     - tox -e py36-django31
+    - bash <(curl -s https://codecov.io/bash)
 
 test-3.7:
   image: python:3.7-buster
   script:
     - cd utils-test-app
     - tox -e py37-django31
+    - bash <(curl -s https://codecov.io/bash)
 
 test-3.8:
   image: python:3.8-buster
   script:
     - cd utils-test-app
     - tox -e py38-django31
+    - bash <(curl -s https://codecov.io/bash)
 
 deploy-pypi:
   stage: deploy
