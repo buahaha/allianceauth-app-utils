@@ -3,8 +3,6 @@ import logging
 import os
 import socket
 
-import pytz
-
 from django.db import models
 from django.test import TestCase
 
@@ -16,7 +14,7 @@ from allianceauth.authentication.models import CharacterOwnership
 from allianceauth.eveonline.models import EveCharacter
 from allianceauth.tests.auth_utils import AuthUtils
 
-from .datetime import dt_eveformat, ldap_time_2_datetime, ldap_timedelta_2_timedelta
+from .datetime import dt_eveformat
 from .helpers import random_string
 
 
@@ -252,17 +250,3 @@ class BravadoOperationStub:
 
     def results(self, **kwargs):
         return self.result(**kwargs)
-
-
-class TestLdapDateConversion(TestCase):
-    def test_ldap_datetime_2_dt(self):
-        self.assertEqual(
-            ldap_time_2_datetime(131924601300000000),
-            pytz.utc.localize(
-                dt.datetime(year=2019, month=1, day=20, hour=12, minute=15, second=30)
-            ),
-        )
-
-    def test_ldap_timedelta_2_timedelta(self):
-        expected = dt.timedelta(minutes=15)
-        self.assertEqual(ldap_timedelta_2_timedelta(9000000000), expected)

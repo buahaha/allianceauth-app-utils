@@ -13,7 +13,7 @@ setup(
     name="utils-test-app",
     version="0.1.0",
     python_requires="~=3.6",
-    install_requires=[],
+    install_requires=["requests"],
     packages=find_packages(),
     include_package_data=True,
     license="tbd",
