@@ -17,7 +17,7 @@ def datetime_round_hour(my_dt: dt.datetime) -> dt.datetime:
 
 def dt_eveformat(my_dt: dt.datetime) -> str:
     """converts a datetime to a string in eve format
-    e.g. '2019-06-25T19:04:44'
+    e.g. ``2019-06-25T19:04:44``
     """
     my_dt_2 = dt.datetime(
         my_dt.year, my_dt.month, my_dt.day, my_dt.hour, my_dt.minute, my_dt.second
@@ -41,7 +41,7 @@ def timeuntil_str(duration: dt.timedelta, show_seconds=True) -> str:
     """return the duration as nicely formatted string.
     Or empty string if duration is negative.
 
-    Format: '[[[999y] [99m]] 99d] 99h 99m 99s'
+    Format: ``[[[999y] [99m]] 99d] 99h 99m 99s``
     """
     seconds = int(duration.total_seconds())
     if seconds > 0:

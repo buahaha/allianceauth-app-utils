@@ -1,10 +1,11 @@
 from django.contrib.messages.constants import DEBUG, ERROR, SUCCESS, WARNING, INFO
 from django.contrib import messages
+from django.http import HttpRequest
 from django.utils.html import format_html
 
 
 class messages_plus:
-    """Improvement of Django messages with added level icons and HTML support
+    """Improvement of default Django messages with added level icons and HTML support
 
     Careful: Use with safe strings only
     """
@@ -35,11 +36,12 @@ class messages_plus:
     @classmethod
     def debug(
         cls,
-        request: object,
+        request: HttpRequest,
         message: str,
         extra_tags: str = "",
         fail_silently: bool = False,
-    ):
+    ) -> None:
+        """send a debug message"""
         messages.debug(
             request, cls._add_messages_icon(DEBUG, message), extra_tags, fail_silently
         )
@@ -47,11 +49,12 @@ class messages_plus:
     @classmethod
     def info(
         cls,
-        request: object,
+        request: HttpRequest,
         message: str,
         extra_tags: str = "",
         fail_silently: bool = False,
-    ):
+    ) -> None:
+        """send an info message"""
         messages.info(
             request, cls._add_messages_icon(INFO, message), extra_tags, fail_silently
         )
@@ -59,11 +62,12 @@ class messages_plus:
     @classmethod
     def success(
         cls,
-        request: object,
+        request: HttpRequest,
         message: str,
         extra_tags: str = "",
         fail_silently: bool = False,
-    ):
+    ) -> None:
+        """send a success message"""
         messages.success(
             request, cls._add_messages_icon(SUCCESS, message), extra_tags, fail_silently
         )
@@ -71,11 +75,12 @@ class messages_plus:
     @classmethod
     def warning(
         cls,
-        request: object,
+        request: HttpRequest,
         message: str,
         extra_tags: str = "",
         fail_silently: bool = False,
-    ):
+    ) -> None:
+        """send a warning message"""
         messages.warning(
             request, cls._add_messages_icon(WARNING, message), extra_tags, fail_silently
         )
@@ -83,11 +88,12 @@ class messages_plus:
     @classmethod
     def error(
         cls,
-        request: object,
+        request: HttpRequest,
         message: str,
         extra_tags: str = "",
         fail_silently: bool = False,
-    ):
+    ) -> None:
+        """send an error message"""
         messages.error(
             request, cls._add_messages_icon(ERROR, message), extra_tags, fail_silently
         )

@@ -2,7 +2,18 @@ import logging
 
 
 class LoggerAddTag(logging.LoggerAdapter):
-    """adds a custom prefix to the given logger"""
+    """adds a custom prefix to the given logger
+
+    Example:
+
+        .. code-block:: python
+
+            import logging
+            from app_utils.logging import LoggerAddTag
+
+            logger = LoggerAddTag(logging.getLogger(__name__), __package__)
+
+    """
 
     def __init__(self, my_logger, prefix):
         super(LoggerAddTag, self).__init__(my_logger, {})

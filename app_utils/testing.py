@@ -31,7 +31,17 @@ class SocketAccessError(Exception):
 
 
 class NoSocketsTestCase(TestCase):
-    """Variation of Django's TestCase class that prevents any network use."""
+    """Variation of Django's TestCase class that prevents any network use.
+
+    Example:
+
+        .. code-block:: python
+
+            class TestMyStuff(NoSocketsTestCase):
+                def test_should_do_what_i_need(self):
+                    ...
+
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -127,7 +137,7 @@ def add_character_to_user_2(
 
     if disconnect_signals:
         AuthUtils.disconnect_signals()
-    character = EveCharacter.objects.update_or_create(
+    character, _ = EveCharacter.objects.update_or_create(
         character_id=character_id, defaults=defaults
     )
     CharacterOwnership.objects.create(

@@ -22,8 +22,23 @@ class ObjectCacheMixin:
             timeout: Timeout in seconds for cache
             select_related: select_related query to be applied (if any)
 
+        Returns:
+            model instance if found
+
         Exceptions:
             ``Model.DoesNotExist`` if object can not be found
+
+        Example:
+
+        .. code-block:: python
+
+            # adding the Mixin to the model manager
+            class MyModelManager(ObjectCacheMixin, models.Manager):
+                pass
+
+            # using the cache method
+            obj = MyModel.objects.get_cached(pk=42, timeout=3600)
+
         """
         func = functools.partial(
             self._fetch_object_for_cache, pk=pk, select_related=select_related
@@ -53,5 +68,25 @@ class ObjectCacheMixin:
 def cached_queryset(
     queryset: models.QuerySet, key: str, timeout: Union[int, float]
 ) -> models.QuerySet:
-    """caches the given queryset"""
+    """caches the given queryset
+
+    Args:
+        queryset: the query set to cache
+        key: key to be used to reference this cache
+        timeout: Timeout in seconds for cache
+
+    Returns:
+        query set
+
+    Example:
+
+        .. code-block:: python
+
+            queryset = cached_queryset(
+                MyModel.objects.filter(name__contains="dummy"),
+                key="my_cache_key",
+                timeout=3600
+            )
+
+    """
     return cache.get_or_set(key, lambda: queryset, timeout)

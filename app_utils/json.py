@@ -8,6 +8,13 @@ from pytz import timezone
 class JSONDateTimeDecoder(json.JSONDecoder):
     """Decoder for the standard json library to decode JSON into datetime.
     To be used together with ``JSONDateTimeEncoder``.
+
+    Example:
+
+        .. code-block:: python
+
+            message = json.loads(message_json, cls=JSONDateTimeDecoder)
+
     """
 
     def __init__(self, *args, **kwargs) -> None:
@@ -33,6 +40,13 @@ class JSONDateTimeDecoder(json.JSONDecoder):
 class JSONDateTimeEncoder(json.JSONEncoder):
     """Encoder for the standard json library to encode datetime into JSON.
     To be used together with ``JSONDateTimeDecoder``.
+
+    Example:
+
+        .. code-block:: python
+
+            message_json = json.dumps(message, cls=JSONDateTimeEncoder)
+
     """
 
     def default(self, o: Any) -> Any:
