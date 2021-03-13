@@ -8,9 +8,15 @@ from django.urls import reverse
 
 
 # old: get_absolute_url
-def reverse_absolute(viewname: str) -> str:
+def reverse_absolute(viewname: str, args: [] = None) -> str:
     """returns absolute URL for given url"""
-    return urljoin(site_absolute_url(), reverse(viewname))
+
+    if args:
+        url = urljoin(site_absolute_url(), reverse(viewname, args=args))
+    else:
+        url = urljoin(site_absolute_url(), reverse(viewname))
+
+    return url
 
 
 # TODO: Only enable for alliance auth
