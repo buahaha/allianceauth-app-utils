@@ -1,9 +1,12 @@
 import datetime as dt
 import logging
+import json
 import os
 import socket
+from typing import Tuple, Iterable
 
 from django.db import models
+from django.http import HttpResponse, JsonResponse
 from django.test import TestCase
 
 from django.contrib.auth.models import User
@@ -91,6 +94,27 @@ def add_new_token(user: User, character: EveCharacter, scopes: list) -> Token:
         ),
         user,
     )
+
+
+def create_user_from_evecharacter(
+    character_id: int, permissions: list = None, scopes: list = None
+) -> Tuple[User, CharacterOwnership]:
+    """Create new allianceauth user from EveCharacter object.
+
+    Args:
+        character_id: ID of eve character
+        permissions: list of permission names, e.g. `"my_app.my_permission"`
+        scopes: list of scope names
+    """
+    auth_character = EveCharacter.objects.get(character_id=character_id)
+    user = AuthUtils.create_user(auth_character.character_name.replace(" ", "_"))
+    character_ownership = add_character_to_user(
+        user, auth_character, is_main=True, scopes=scopes
+    )
+    if permissions:
+        for permission_name in permissions:
+            user = AuthUtils.add_permission_to_user_by_name(permission_name, user)
+    return user, character_ownership
 
 
 def add_character_to_user(
@@ -208,6 +232,39 @@ def queryset_pks(queryset) -> set:
     Useful for comparing test results.
     """
     return set(queryset.values_list("pk", flat=True))
+
+
+def response_text(response: HttpResponse) -> str:
+    """Return content of a HTTP response as string."""
+    return response.content.decode("utf-8")
+
+
+def json_response_to_python(response: JsonResponse) -> object:
+    """Convert JSON response into Python object."""
+    return json.loads(response_text(response))
+
+
+def json_response_to_dict(response: JsonResponse, key="id") -> dict:
+    """Convert JSON response into dict by given key."""
+    return {x[key]: x for x in json_response_to_python(response)}
+
+
+def multi_assert_in(items: Iterable, container: Iterable) -> bool:
+    """Return True if all items are in container."""
+    for item in items:
+        if item not in container:
+            return False
+
+    return True
+
+
+def multi_assert_not_in(items: Iterable, container: Iterable) -> bool:
+    """Return True if none of the item is in container."""
+    for item in items:
+        if item in container:
+            return False
+
+    return True
 
 
 class BravadoResponseStub:

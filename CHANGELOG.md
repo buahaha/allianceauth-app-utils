@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased] - yyyy-mm-dd
+
+### Added
+
+- testing.create_user_from_evecharacter
+- esi_testing module with tools for testing with django-esi
+- testing:  response_text, json_response_to_python, json_response_to_dict, multi_assert_in, multi_assert_not_in
+
 ## [1.0.2] - 2021-03-13
 
 ### Changed

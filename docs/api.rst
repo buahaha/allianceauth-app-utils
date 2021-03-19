@@ -26,6 +26,12 @@ django
 .. automodule:: app_utils.django
     :members:
 
+esi_testing
+===========
+
+.. automodule:: app_utils.esi_testing
+    :members:
+
 helpers
 =======
 
