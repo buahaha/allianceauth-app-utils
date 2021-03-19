@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- New: testing.create_user_from_evecharacter
-- New: esi_testing module with tools for testing with django-esi
+- testing.create_user_from_evecharacter
+- esi_testing module with tools for testing with django-esi
+- testing:  response_text, json_response_to_python, json_response_to_dict, multi_assert_in, multi_assert_not_in
 
 ## [1.0.2] - 2021-03-13
 

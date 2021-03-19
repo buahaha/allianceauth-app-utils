@@ -1,10 +1,12 @@
 import datetime as dt
 import logging
+import json
 import os
 import socket
-from typing import Tuple
+from typing import Tuple, Iterable
 
 from django.db import models
+from django.http import HttpResponse, JsonResponse
 from django.test import TestCase
 
 from django.contrib.auth.models import User
@@ -230,6 +232,39 @@ def queryset_pks(queryset) -> set:
     Useful for comparing test results.
     """
     return set(queryset.values_list("pk", flat=True))
+
+
+def response_text(response: HttpResponse) -> str:
+    """Return content of a HTTP response as string."""
+    return response.content.decode("utf-8")
+
+
+def json_response_to_python(response: JsonResponse) -> object:
+    """Convert JSON response into Python object."""
+    return json.loads(response_text(response))
+
+
+def json_response_to_dict(response: JsonResponse, key="id") -> dict:
+    """Convert JSON response into dict by given key."""
+    return {x[key]: x for x in json_response_to_python(response)}
+
+
+def multi_assert_in(items: Iterable, container: Iterable) -> bool:
+    """Return True if all items are in container."""
+    for item in items:
+        if item not in container:
+            return False
+
+    return True
+
+
+def multi_assert_not_in(items: Iterable, container: Iterable) -> bool:
+    """Return True if none of the item is in container."""
+    for item in items:
+        if item in container:
+            return False
+
+    return True
 
 
 class BravadoResponseStub:
