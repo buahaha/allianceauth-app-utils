@@ -2,6 +2,7 @@ import datetime as dt
 import logging
 import os
 import socket
+from typing import Tuple
 
 from django.db import models
 from django.test import TestCase
@@ -91,6 +92,27 @@ def add_new_token(user: User, character: EveCharacter, scopes: list) -> Token:
         ),
         user,
     )
+
+
+def create_user_from_evecharacter(
+    character_id: int, permissions: list = None, scopes: list = None
+) -> Tuple[User, CharacterOwnership]:
+    """Create new allianceauth user from EveCharacter object.
+
+    Args:
+        character_id: ID of eve character
+        permissions: list of permission names, e.g. `"my_app.my_permission"`
+        scopes: list of scope names
+    """
+    auth_character = EveCharacter.objects.get(character_id=character_id)
+    user = AuthUtils.create_user(auth_character.character_name.replace(" ", "_"))
+    character_ownership = add_character_to_user(
+        user, auth_character, is_main=True, scopes=scopes
+    )
+    if permissions:
+        for permission_name in permissions:
+            user = AuthUtils.add_permission_to_user_by_name(permission_name, user)
+    return user, character_ownership
 
 
 def add_character_to_user(
