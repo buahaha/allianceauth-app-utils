@@ -1,12 +1,9 @@
 from unittest.mock import Mock, patch
 
-from django.contrib.auth.models import User, Group
-from django.test import TestCase
 from allianceauth.tests.auth_utils import AuthUtils
-
-
 from app_utils.django import app_labels, clean_setting, users_with_permission
-
+from django.contrib.auth.models import Group, User
+from django.test import TestCase
 
 MODULE_PATH = "app_utils"
 
@@ -188,10 +185,12 @@ class TestUsersWithPermissionQS(TestCase):
         )
 
     def test_distinct_qs(self):
-        """only return one user object, despiste multiple matches"""
+        """only return one user object, despite multiple matches"""
+        # given
         AuthUtils.add_permissions_to_user([self.permission], self.user_1)
         self.user_1.groups.add(self.group)
         AuthUtils.assign_state(self.user_1, self.state, disconnect_signals=True)
-        self.assertSetEqual(
-            self.user_with_permission_pks(), {self.user_1.pk, self.user_3.pk}
-        )
+        # when
+        result = self.user_with_permission_pks()
+        # then
+        self.assertSetEqual(result, {self.user_1.pk, self.user_3.pk})
