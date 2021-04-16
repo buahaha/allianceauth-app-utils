@@ -3,7 +3,8 @@
 from collections import namedtuple
 from typing import Any, List
 
-from bravado.exception import HTTPNotFound, HTTPInternalServerError
+from bravado.exception import HTTPInternalServerError, HTTPNotFound
+from pytz import UTC
 
 from django.utils.dateparse import parse_datetime
 
@@ -147,7 +148,7 @@ class _EsiRoute:
                         try:
                             dt = parse_datetime(v)
                             if dt:
-                                item[k] = dt
+                                item[k] = dt.replace(tzinfo=UTC)
                         except ValueError:
                             pass
 

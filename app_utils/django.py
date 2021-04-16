@@ -3,14 +3,12 @@ from typing import Any
 
 from django.apps import apps
 from django.conf import settings
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import Permission, User
 from django.db import models
-from django.db.models import Q
 from django.utils.html import format_html
 
 from .logging import LoggerAddTag
 from .urls import static_file_absolute_url
-
 
 logger = LoggerAddTag(logging.getLogger(__name__), __package__)
 
@@ -119,20 +117,18 @@ def users_with_permission(
         permission: required permission
         include_superusers: whether superusers are includes in the returned list
     """
-    filters = (
-        Q(user_permissions=permission)
-        | Q(groups__permissions=permission)
-        | Q(profile__state__permissions=permission)
+    users_qs = (
+        permission.user_set.all()
+        | User.objects.filter(
+            groups__in=list(permission.group_set.values_list("pk", flat=True))
+        )
+        | User.objects.select_related("profile").filter(
+            profile__state__in=list(permission.state_set.values_list("pk", flat=True))
+        )
     )
     if include_superusers:
-        filters |= Q(is_superuser=True)
-    return (
-        User.objects.prefetch_related(
-            "user_permissions", "groups", "profile__state__permissions"
-        )
-        .filter(filters)
-        .distinct()
-    )
+        users_qs |= User.objects.filter(is_superuser=True)
+    return users_qs.distinct()
 
 
 def admin_boolean_icon_html(value) -> str:

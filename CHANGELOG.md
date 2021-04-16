@@ -7,11 +7,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.2.0] - 2021-04-16
+
+### Added
+
+- helpers.AttrDict: Access dict like an object
+- views.BootstrapStyle
+- views.fontawesome_modal_button_html
+
+### Changed
+
+- Performance improvement for django.users_with_permission
+
+### Fixed
+
+- Create TZ aware timestamps in fake ESI response
+
+## [1.1.0] - 2021-03-19
+
 ### Added
 
 - testing.create_user_from_evecharacter
 - esi_testing module with tools for testing with django-esi
-- testing:  response_text, json_response_to_python, json_response_to_dict, multi_assert_in, multi_assert_not_in
+- testing: response_text, json_response_to_python, json_response_to_dict, multi_assert_in, multi_assert_not_in
+
 
 ## [1.0.2] - 2021-03-13
 
