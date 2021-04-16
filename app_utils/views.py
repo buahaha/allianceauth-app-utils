@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Optional
 
 from django.utils.functional import lazy
@@ -7,6 +8,20 @@ from django.utils.translation import gettext_lazy as _
 
 DEFAULT_ICON_SIZE = 32
 format_html_lazy = lazy(format_html, str)
+
+
+class BootstrapStyle(str, Enum):
+    """Bootstrap context style names, e.g. for labels"""
+
+    DANGER = "danger"  #:
+    DEFAULT = "default"  #:
+    INFO = "info"  #:
+    PRIMARY = "primary"  #:
+    SUCCESS = "success"  #:
+    WARNING = "warning"  #:
+
+    def __str__(self) -> str:
+        return self.value
 
 
 # old: add_bs_label_html
@@ -91,6 +106,39 @@ def fontawesome_link_button_html(
         mark_safe(f' title="{tooltip}"') if tooltip else "",
         mark_safe(' disabled="disabled"') if disabled else "",
         mark_safe(f'<i class="{fa_code}"></i>'),
+    )
+
+
+def fontawesome_modal_button_html(
+    modal_id: str,
+    fa_code: str,
+    ajax_url: str = "",
+    tooltip: str = "",
+    style=BootstrapStyle.DEFAULT,
+) -> str:
+    """create fontawesome modal button and return HTML
+
+    Args:
+        modal_id: DOM ID of modal to invoke
+        fa_code: fontawesome code, e.g. "fas fa-moon"
+        ajax_url: URL to invoke via AJAX for loading modal content
+        tooltip: text to appear as tooltip
+        style: Bootstrap context style for the button
+    """
+    return format_html(
+        '<button type="button" '
+        'class="btn btn-{}" '
+        'data-toggle="modal" '
+        'data-target="#{}" '
+        "{}"
+        "{}>"
+        '<i class="{}"></i>'
+        "</button>",
+        BootstrapStyle(style),
+        modal_id,
+        mark_safe(f'title="{tooltip}" ') if tooltip else "",
+        mark_safe(f'data-ajax_url="{ajax_url}" ') if ajax_url else "",
+        fa_code,
     )
 
 

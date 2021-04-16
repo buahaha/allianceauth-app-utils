@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.2.0] - 2021-04-16
+
 ### Added
 
-- AttrDict: Access dict like an object
+- helpers.AttrDict: Access dict like an object
+- views.BootstrapStyle
+- views.fontawesome_modal_button_html
 
 ### Changed
 
