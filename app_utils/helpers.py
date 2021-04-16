@@ -20,3 +20,23 @@ def random_string(char_count: int) -> str:
     return "".join(
         random.choice(string.ascii_uppercase + string.digits) for _ in range(char_count)
     )
+
+
+class AttrDict(dict):
+    """Enhanced dict that allows property access to its keys.
+
+    Example:
+
+    .. code-block:: python
+
+        >> my_dict = AttrDict({"color": "red", "size": "medium"})
+        >> my_dict["color"]
+        "red"
+        >> my_dict.color
+        "red"
+
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__dict__ = self

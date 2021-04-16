@@ -5,7 +5,6 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
-
 DEFAULT_ICON_SIZE = 32
 format_html_lazy = lazy(format_html, str)
 
@@ -110,7 +109,9 @@ def humanize_value(value: float, precision: int = 2) -> str:
 def image_html(src: str, classes: list = None, size: int = None) -> str:
     """returns the HTML for an image with optional classes and size"""
     classes_str = format_html('class="{}"', (" ".join(classes)) if classes else "")
-    size_html = format_html('width="{}" height="{}"', size, size) if size else ""
+    size_html = (
+        format_html('width="{}" height="{}"', int(size), int(size)) if size else ""
+    )
     return format_html('<img {} {} src="{}">', classes_str, size_html, src)
 
 
