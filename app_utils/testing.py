@@ -1,16 +1,14 @@
 import datetime as dt
-import logging
 import json
+import logging
 import os
 import socket
-from typing import Tuple, Iterable
+from typing import Iterable, Tuple
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.http import HttpResponse, JsonResponse
 from django.test import TestCase
-
-from django.contrib.auth.models import User
-
 from esi.models import Scope, Token
 
 from allianceauth.authentication.models import CharacterOwnership

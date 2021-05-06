@@ -1,13 +1,14 @@
 import datetime as dt
 
-from django.test import TestCase
 import pytz
+
+from django.test import TestCase
 
 from app_utils.datetime import (
     datetime_round_hour,
-    timeuntil_str,
     ldap_time_2_datetime,
     ldap_timedelta_2_timedelta,
+    timeuntil_str,
 )
 
 

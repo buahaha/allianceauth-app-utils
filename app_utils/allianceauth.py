@@ -1,8 +1,8 @@
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import Permission, User
 from django.db.models import Q
 
-from allianceauth.views import NightModeRedirectView
 from allianceauth.notifications import notify
+from allianceauth.views import NightModeRedirectView
 
 
 def notify_admins(message: str, title: str, level="info") -> None:

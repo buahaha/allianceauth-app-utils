@@ -1,8 +1,8 @@
 import datetime as dt
+
 import pytz
 
 from django.utils.translation import gettext_lazy as _
-
 
 # Default format for output of datetime
 DATETIME_FORMAT = "%Y-%m-%d %H:%M"

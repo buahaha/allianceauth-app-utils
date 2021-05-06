@@ -3,13 +3,13 @@ from django.utils import translation
 from django.utils.html import mark_safe
 
 from app_utils.views import (
+    bootstrap_glyph_html,
+    bootstrap_label_html,
+    bootstrap_link_button_html,
+    humanize_value,
+    link_html,
     no_wrap_html,
     yesno_str,
-    bootstrap_link_button_html,
-    bootstrap_glyph_html,
-    link_html,
-    bootstrap_label_html,
-    humanize_value,
 )
 
 MODULE_PATH = "app_utils"

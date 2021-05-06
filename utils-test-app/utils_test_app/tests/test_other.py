@@ -4,7 +4,6 @@ from unittest.mock import patch
 from django.test import TestCase
 from django.utils.timezone import now
 
-
 from app_utils.helpers import chunks
 from app_utils.json import JSONDateTimeDecoder, JSONDateTimeEncoder
 from app_utils.urls import site_absolute_url

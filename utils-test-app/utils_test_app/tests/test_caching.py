@@ -5,7 +5,6 @@ from django.test import TestCase
 
 from app_utils.caching import ObjectCacheMixin
 
-
 CURRENT_PATH = "utils_test_app.tests.test_caching"
 fake_objects = dict()
 

@@ -1,4 +1,5 @@
 import os
+
 from setuptools import find_packages, setup
 
 from app_utils import __version__

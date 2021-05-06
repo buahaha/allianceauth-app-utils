@@ -1,14 +1,14 @@
+import requests
+
+from django.contrib.auth.models import User
 from django.test import TestCase
 
-import requests
-from django.contrib.auth.models import User
 from allianceauth.authentication.models import EveCharacter
-
 from app_utils.testing import (
     NoSocketsTestCase,
     SocketAccessError,
-    generate_invalid_pk,
     create_user_from_evecharacter,
+    generate_invalid_pk,
 )
 
 

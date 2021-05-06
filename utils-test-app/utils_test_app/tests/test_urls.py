@@ -1,4 +1,5 @@
 from unittest.mock import patch
+
 from django.test import TestCase, override_settings
 
 from app_utils.urls import reverse_absolute, site_absolute_url

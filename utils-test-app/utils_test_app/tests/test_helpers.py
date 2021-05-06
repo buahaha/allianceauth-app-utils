@@ -1,5 +1,6 @@
-from app_utils.helpers import humanize_number
 from django.test import TestCase
+
+from app_utils.helpers import humanize_number
 
 
 class TestFormatisk(TestCase):

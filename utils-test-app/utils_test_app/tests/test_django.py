@@ -1,9 +1,10 @@
 from unittest.mock import Mock, patch
 
-from allianceauth.tests.auth_utils import AuthUtils
-from app_utils.django import app_labels, clean_setting, users_with_permission
 from django.contrib.auth.models import Group, User
 from django.test import TestCase
+
+from allianceauth.tests.auth_utils import AuthUtils
+from app_utils.django import app_labels, clean_setting, users_with_permission
 
 MODULE_PATH = "app_utils"
 

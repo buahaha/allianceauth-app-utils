@@ -1,5 +1,5 @@
-from django.contrib.messages.constants import DEBUG, ERROR, SUCCESS, WARNING, INFO
 from django.contrib import messages
+from django.contrib.messages.constants import DEBUG, ERROR, INFO, SUCCESS, WARNING
 from django.http import HttpRequest
 from django.utils.html import format_html
 
