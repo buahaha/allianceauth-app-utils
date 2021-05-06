@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.3.0] - 2021-05-06
+
+### Added
+
+- helpers.humanize_number
+
 ## [1.2.0] - 2021-04-16
 
 ### Added
