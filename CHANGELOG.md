@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.4.0] - 2021-06-24
+
 ### Added
 
+- allianceauth.create_fake_user
+- allianceauth.notify_admins_throttled
 - views.HttpResponseNoContent
+
+### Changed
+
+- Improved documentation layout
 
 ## [1.3.0] - 2021-05-06
 

@@ -115,7 +115,7 @@ def users_with_permission(
 
     Args:
         permission: required permission
-        include_superusers: whether superusers are includes in the returned list
+        include_superusers: whether superusers are included in the returned list
     """
     users_qs = (
         permission.user_set.all()

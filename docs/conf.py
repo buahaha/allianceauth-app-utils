@@ -41,10 +41,11 @@ author = "Erik Kalkoken"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "recommonmark",
-    "sphinx_rtd_theme",
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
+    "myst_parser",
+    "sphinx_rtd_theme",
     "sphinxcontrib_django",
 ]
 
@@ -60,7 +61,7 @@ master_doc = "index"
 
 # autodoc
 autodoc_mock_imports = ["allianceauth"]
-
+add_module_names = False
 
 # -- Options for HTML output -------------------------------------------------
 
