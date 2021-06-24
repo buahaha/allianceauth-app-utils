@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Optional
 
+from django.http import HttpResponse
 from django.utils.functional import lazy
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
@@ -8,6 +9,27 @@ from django.utils.translation import gettext_lazy as _
 
 DEFAULT_ICON_SIZE = 32
 format_html_lazy = lazy(format_html, str)
+
+
+class HttpResponseNoContent(HttpResponse):
+    """Special HTTP response with no content, just headers.
+
+    The content operations are ignored.
+    """
+
+    def __init__(self, content="", mimetype=None, status=None, content_type=None):
+        super().__init__(status=204)
+
+        # although we don't define a content-type, base class sets a
+        # default one -- remove it, we're not returning content
+        if "content-type" in self._headers:
+            del self._headers["content-type"]
+
+    def _set_content(self, value):
+        pass
+
+    def _get_content(self, value):
+        pass
 
 
 class BootstrapStyle(str, Enum):

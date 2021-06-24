@@ -120,17 +120,31 @@ def add_character_to_user(
     character: EveCharacter,
     is_main: bool = False,
     scopes: list = None,
+    disconnect_signals: bool = False,
 ) -> CharacterOwnership:
-    """Generates a token for the given Eve character and makes the given user it's owner"""
+    """Generates a token for the given Eve character and makes the given user it's owner
+
+    Args:
+    - user: New character owner
+    - character: Character to add
+    - is_main: Will set character as the users's main when True
+    - scopes: List of scopes for the token
+    - disconnect_signals: Will disconnect signals temporarily when True
+    """
     if not scopes:
         scopes = "publicData"
 
+    if disconnect_signals:
+        AuthUtils.disconnect_signals()
     add_new_token(user, character, scopes)
 
     if is_main:
         user.profile.main_character = character
         user.profile.save()
         user.save()
+
+    if disconnect_signals:
+        AuthUtils.connect_signals()
 
     return CharacterOwnership.objects.get(user=user, character=character)
 

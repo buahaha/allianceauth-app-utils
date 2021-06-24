@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
+### Added
+
+- views.HttpResponseNoContent
+
 ## [1.3.0] - 2021-05-06
 
 ### Added
