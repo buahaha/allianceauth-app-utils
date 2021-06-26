@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.5.0] - 2021-06-26
+
+### Added
+
+- New section esi containing helpers for working with ESI
+
+### Changed
+
+- Improved documentation with a short summary for each section.
+- Logging from this package will now include it's full verbose name
+
 ## [1.4.0] - 2021-06-24
 
 ### Added

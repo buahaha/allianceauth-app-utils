@@ -7,10 +7,11 @@ from django.contrib.auth.models import Permission, User
 from django.db import models
 from django.utils.html import format_html
 
+from . import __title__
 from .logging import LoggerAddTag
 from .urls import static_file_absolute_url
 
-logger = LoggerAddTag(logging.getLogger(__name__), __package__)
+logger = LoggerAddTag(logging.getLogger(__name__), __title__)
 
 
 def app_labels() -> set:
