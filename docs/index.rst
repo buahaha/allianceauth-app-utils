@@ -14,6 +14,7 @@ Welcome to allianceauth-app-utils's documentation!
    :caption: Contents:
 
    api
+   settings
 
 
 Indices and tables

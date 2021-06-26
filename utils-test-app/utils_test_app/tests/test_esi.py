@@ -50,17 +50,32 @@ class TestEsiStatus(TestCase):
         self.assertEqual(obj.error_limit_remain, 10)
         self.assertEqual(obj.error_limit_reset, 20)
 
-    @patch(MODULE_PATH + ".MEMBERAUDIT_ESI_ERROR_LIMIT_THRESHOLD", 25)
+    @patch(MODULE_PATH + ".APPUTILS_ESI_ERROR_LIMIT_THRESHOLD", 25)
+    def test_is_ok_should_be_true(self):
+        obj = EsiStatus(True, error_limit_remain=30, error_limit_reset=20)
+        self.assertTrue(obj.is_ok)
+
+    @patch(MODULE_PATH + ".APPUTILS_ESI_ERROR_LIMIT_THRESHOLD", 25)
+    def test_is_ok_should_be_false_1(self):
+        obj = EsiStatus(False, error_limit_remain=30, error_limit_reset=20)
+        self.assertFalse(obj.is_ok)
+
+    @patch(MODULE_PATH + ".APPUTILS_ESI_ERROR_LIMIT_THRESHOLD", 25)
+    def test_is_ok_should_be_false_2(self):
+        obj = EsiStatus(True, error_limit_remain=20, error_limit_reset=20)
+        self.assertFalse(obj.is_ok)
+
+    @patch(MODULE_PATH + ".APPUTILS_ESI_ERROR_LIMIT_THRESHOLD", 25)
     def test_is_error_limit_exceeded_1(self):
         obj = EsiStatus(True, error_limit_remain=30, error_limit_reset=20)
         self.assertFalse(obj.is_error_limit_exceeded)
 
-    @patch(MODULE_PATH + ".MEMBERAUDIT_ESI_ERROR_LIMIT_THRESHOLD", 25)
+    @patch(MODULE_PATH + ".APPUTILS_ESI_ERROR_LIMIT_THRESHOLD", 25)
     def test_is_error_limit_exceeded_2(self):
         obj = EsiStatus(True, error_limit_remain=10, error_limit_reset=20)
         self.assertTrue(obj.is_error_limit_exceeded)
 
-    @patch(MODULE_PATH + ".MEMBERAUDIT_ESI_ERROR_LIMIT_THRESHOLD", 25)
+    @patch(MODULE_PATH + ".APPUTILS_ESI_ERROR_LIMIT_THRESHOLD", 25)
     def test_is_error_limit_exceeded_3(self):
         obj = EsiStatus(True, error_limit_remain=10)
         self.assertFalse(obj.is_error_limit_exceeded)
@@ -89,14 +104,14 @@ class TestEsiStatus(TestCase):
         except Exception:
             self.fail("raise_for_status() raised Exception unexpectedly!")
 
-    @patch(MODULE_PATH + ".MEMBERAUDIT_ESI_ERROR_LIMIT_THRESHOLD", 25)
+    @patch(MODULE_PATH + ".APPUTILS_ESI_ERROR_LIMIT_THRESHOLD", 25)
     def test_raise_for_status_2(self):
         """When ESI is offline, then raise exception"""
         obj = EsiStatus(False, error_limit_remain=99, error_limit_reset=20)
         with self.assertRaises(EsiOffline):
             obj.raise_for_status()
 
-    @patch(MODULE_PATH + ".MEMBERAUDIT_ESI_ERROR_LIMIT_THRESHOLD", 25)
+    @patch(MODULE_PATH + ".APPUTILS_ESI_ERROR_LIMIT_THRESHOLD", 25)
     def test_raise_for_status_3(self):
         """When ESI error limit is exceeded, then raise exception"""
         obj = EsiStatus(True, error_limit_remain=15, error_limit_reset=20)

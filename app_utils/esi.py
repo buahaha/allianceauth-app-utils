@@ -8,8 +8,8 @@ import requests
 from app_utils.logging import LoggerAddTag
 
 from . import __title__, __version__
+from ._app_settings import APPUTILS_ESI_ERROR_LIMIT_THRESHOLD
 
-MEMBERAUDIT_ESI_ERROR_LIMIT_THRESHOLD = 50
 logger = LoggerAddTag(logging.getLogger(__name__), __title__)
 
 
@@ -61,6 +61,11 @@ class EsiStatus:
             self._error_limit_reset = int(error_limit_reset)
 
     @property
+    def is_ok(self) -> bool:
+        """True if ESI is online and below error limit, else False."""
+        return self.is_online and not self.is_error_limit_exceeded
+
+    @property
     def is_online(self) -> bool:
         """True if ESI is online, else False."""
         return self._is_online
@@ -84,7 +89,7 @@ class EsiStatus:
         return bool(
             self.error_limit_remain
             and self.error_limit_reset
-            and self.error_limit_remain <= MEMBERAUDIT_ESI_ERROR_LIMIT_THRESHOLD
+            and self.error_limit_remain <= APPUTILS_ESI_ERROR_LIMIT_THRESHOLD
         )
 
     def error_limit_reset_w_jitter(self, max_jitter: int = None) -> int:

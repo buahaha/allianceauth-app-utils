@@ -2,7 +2,6 @@ import hashlib
 import re
 from typing import List
 
-from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.core.cache import cache
 
@@ -10,9 +9,8 @@ from allianceauth.notifications import notify
 from allianceauth.tests.auth_utils import AuthUtils
 from allianceauth.views import NightModeRedirectView
 
+from ._app_settings import APPUTILS_ADMIN_NOTIFY_TIMEOUT
 from .django import users_with_permission
-
-_ADMIN_NOTIFY_TIMEOUT_DEFAULT = 86400
 
 
 def notify_admins(message: str, title: str, level: str = "info") -> None:
@@ -54,19 +52,12 @@ def notify_admins_throttled(
             APP_UTILS_ADMIN_NOTIFY_TIMEOUT
     """
 
-    def timeout_default() -> int:
-        try:
-            value = int(settings.APP_UTILS_ADMIN_NOTIFY_TIMEOUT)
-        except (ValueError, TypeError, AttributeError):
-            value = _ADMIN_NOTIFY_TIMEOUT_DEFAULT
-        return value if value > 0 else _ADMIN_NOTIFY_TIMEOUT_DEFAULT
-
     def send_notification() -> str:
         notify_admins(message=message, title=title, level=level)
         return "THROTTLED"
 
     if not timeout:
-        timeout = timeout_default()
+        timeout = APPUTILS_ADMIN_NOTIFY_TIMEOUT
     hashed_id = hashlib.md5(str(message_id).encode("utf-8")).hexdigest()
     key = f"APP_UTILS_ADMIN_NOTIFY_THROTTLED_{hashed_id}"
     cache.get_or_set(key, send_notification, timeout)

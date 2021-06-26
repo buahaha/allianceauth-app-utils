@@ -2,15 +2,17 @@ from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.test import TestCase, override_settings
+from django.test import TestCase
 
 from allianceauth.notifications.models import Notification
+from app_utils._app_settings import APPUTILS_ADMIN_NOTIFY_TIMEOUT
 from app_utils.allianceauth import (
-    _ADMIN_NOTIFY_TIMEOUT_DEFAULT,
     create_fake_user,
     notify_admins,
     notify_admins_throttled,
 )
+
+MODULE_PATH = "app_utils.allianceauth"
 
 
 class TestCreateFakeUser(TestCase):
@@ -103,10 +105,10 @@ class TestNotifyAdminsThrottled(TestCase):
         notify_admins_throttled("message-id", "message", "title")
         # then
         args, _ = spy_cache_get_or_set.call_args
-        self.assertEqual(args[2], _ADMIN_NOTIFY_TIMEOUT_DEFAULT)
+        self.assertEqual(args[2], APPUTILS_ADMIN_NOTIFY_TIMEOUT)
 
-    @override_settings(APP_UTILS_ADMIN_NOTIFY_TIMEOUT=123)
-    @patch("app_utils.allianceauth.cache.get_or_set", wraps=cache.get_or_set)
+    @patch(MODULE_PATH + ".APPUTILS_ADMIN_NOTIFY_TIMEOUT", 123)
+    @patch(MODULE_PATH + ".cache.get_or_set", wraps=cache.get_or_set)
     def test_should_use_timeout_setting_when_defined(self, spy_cache_get_or_set):
         # given
         create_fake_user(
@@ -118,35 +120,3 @@ class TestNotifyAdminsThrottled(TestCase):
         # then
         args, _ = spy_cache_get_or_set.call_args
         self.assertEqual(args[2], 123)
-
-    @override_settings(APP_UTILS_ADMIN_NOTIFY_TIMEOUT="invalid")
-    @patch("app_utils.allianceauth.cache.get_or_set", wraps=cache.get_or_set)
-    def test_should_use_default_timeout_when_setting_invalid_1(
-        self, spy_cache_get_or_set
-    ):
-        # given
-        create_fake_user(
-            1001, "Bruce Wayne", permissions=["auth.logging_notifications"]
-        )
-        cache.clear()
-        # when
-        notify_admins_throttled("message-id", "message", "title")
-        # then
-        args, _ = spy_cache_get_or_set.call_args
-        self.assertEqual(args[2], _ADMIN_NOTIFY_TIMEOUT_DEFAULT)
-
-    @override_settings(APP_UTILS_ADMIN_NOTIFY_TIMEOUT=-1)
-    @patch("app_utils.allianceauth.cache.get_or_set", wraps=cache.get_or_set)
-    def test_should_use_default_timeout_when_setting_invalid_2(
-        self, spy_cache_get_or_set
-    ):
-        # given
-        create_fake_user(
-            1001, "Bruce Wayne", permissions=["auth.logging_notifications"]
-        )
-        cache.clear()
-        # when
-        notify_admins_throttled("message-id", "message", "title")
-        # then
-        args, _ = spy_cache_get_or_set.call_args
-        self.assertEqual(args[2], _ADMIN_NOTIFY_TIMEOUT_DEFAULT)
