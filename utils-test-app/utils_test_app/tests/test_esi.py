@@ -1,3 +1,4 @@
+import datetime as dt
 from unittest.mock import patch
 
 import requests_mock
@@ -121,8 +122,11 @@ class TestEsiStatus(TestCase):
 
 @requests_mock.Mocker()
 class TestFetchEsiStatus(TestCase):
+    @patch(MODULE_PATH + ".APPUTILS_ESI_DAILY_DOWNTIME_START", 11.0)
+    @patch(MODULE_PATH + ".APPUTILS_ESI_DAILY_DOWNTIME_END", 11.25)
     def test_normal(self, requests_mocker):
         """When ESI is online and header is complete, then report status accordingly"""
+        # given
         requests_mocker.register_uri(
             "GET",
             url="https://esi.evetech.net/latest/status/",
@@ -136,7 +140,12 @@ class TestFetchEsiStatus(TestCase):
                 "start_time": "2017-01-02T12:34:56Z",
             },
         )
-        status = fetch_esi_status()
+        # when
+        my_now = dt.datetime(2021, 6, 29, 10, 0)
+        with patch(MODULE_PATH + ".now") as mock_now:
+            mock_now.return_value = my_now
+            status = fetch_esi_status()
+        # then
         self.assertTrue(status.is_online)
         self.assertEqual(status.error_limit_remain, 40)
         self.assertEqual(status.error_limit_reset, 30)
@@ -292,3 +301,40 @@ class TestFetchEsiStatus(TestCase):
         status = fetch_esi_status()
         self.assertEqual(requests_mocker.call_count, 1)
         self.assertFalse(status.is_online)
+
+    @patch(MODULE_PATH + ".APPUTILS_ESI_DAILY_DOWNTIME_START", 11.0)
+    @patch(MODULE_PATH + ".APPUTILS_ESI_DAILY_DOWNTIME_END", 11.25)
+    def test_should_report_offline_during_esi_downtime_1(self, requests_mocker):
+        """When during ESI daily downtime, report ESI as offline."""
+        # when
+        my_now = dt.datetime(2021, 6, 29, 11, 1)
+        with patch(MODULE_PATH + ".now") as mock_now:
+            mock_now.return_value = my_now
+            status = fetch_esi_status()
+        # then
+        self.assertFalse(status.is_online)
+
+    @patch(MODULE_PATH + ".APPUTILS_ESI_DAILY_DOWNTIME_START", 11.0)
+    @patch(MODULE_PATH + ".APPUTILS_ESI_DAILY_DOWNTIME_END", 11.25)
+    def test_should_ignore_daily_downtime(self, requests_mocker):
+        # given
+        requests_mocker.register_uri(
+            "GET",
+            url="https://esi.evetech.net/latest/status/",
+            headers={
+                "X-Esi-Error-Limit-Remain": "40",
+                "X-Esi-Error-Limit-Reset": "30",
+            },
+            json={
+                "players": 12345,
+                "server_version": "1132976",
+                "start_time": "2017-01-02T12:34:56Z",
+            },
+        )
+        # when
+        my_now = dt.datetime(2021, 6, 29, 11, 1)
+        with patch(MODULE_PATH + ".now") as mock_now:
+            mock_now.return_value = my_now
+            status = fetch_esi_status(ignore_daily_downtime=True)
+        # then
+        self.assertTrue(status.is_online)

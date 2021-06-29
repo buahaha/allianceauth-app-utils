@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
-## [1.5.1] - 2021-06-29
+## [1.6.0] - 2021-06-29
 
 ### Changed
 
+- esi.fetch_esi_status() will not report ESI as down during the daily downtime by default
 - messages.messages_plus: Disabled icon feature, since it is not provided by Auth core. Icons will still be rendered, but are now created by Auth (with allianceauth>=2.8.5).
 
 ## [1.5.0] - 2021-06-26
