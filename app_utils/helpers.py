@@ -1,6 +1,10 @@
+import hashlib
 import os
 import random
 import string
+from typing import Any, Callable
+
+from django.core.cache import cache
 
 
 def chunks(lst, size):
@@ -63,3 +67,23 @@ def humanize_number(value, magnitude: str = None, precision: int = 1) -> str:
         else:
             magnitude = ""
     return f"{value / 10 ** power_map[magnitude]:,.{precision}f}{magnitude}"
+
+
+def throttle(func: Callable, context_id: str, timeout: int) -> Any:
+    """Call a function, but limit repeated calls with a timeout, e.g. once per day.
+
+    When a repeated call falls within the timeout the call will simply be ignored.
+
+    Args:
+        func: the function to be called
+        context_id: a string representing the context for applying the throttle,\
+            e.g. a combination of feature name and user ID
+        timeout: timeout in seconds between each repeated call of the function
+
+    Returns:
+        Return cached value of called function func
+
+    """
+    hashed_id = hashlib.md5(str(context_id).encode("utf-8")).hexdigest()
+    key = f"APP_UTILS_THROTTLED_{hashed_id}"
+    return cache.get_or_set(key, func, timeout)

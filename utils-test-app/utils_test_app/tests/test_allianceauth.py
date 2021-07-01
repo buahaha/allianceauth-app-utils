@@ -11,6 +11,7 @@ from app_utils.allianceauth import (
     notify_admins,
     notify_admins_throttled,
 )
+from app_utils.helpers import throttle
 
 MODULE_PATH = "app_utils.allianceauth"
 
@@ -94,8 +95,8 @@ class TestNotifyAdminsThrottled(TestCase):
         # then
         self.assertEqual(Notification.objects.filter(user=user_admin).count(), 1)
 
-    @patch("app_utils.allianceauth.cache.get_or_set", wraps=cache.get_or_set)
-    def test_should_use_default_timeout_when_not_specified(self, spy_cache_get_or_set):
+    @patch("app_utils.allianceauth.throttle", wraps=throttle)
+    def test_should_use_default_timeout_when_not_specified(self, spy_throttle):
         # given
         create_fake_user(
             1001, "Bruce Wayne", permissions=["auth.logging_notifications"]
@@ -104,12 +105,12 @@ class TestNotifyAdminsThrottled(TestCase):
         # when
         notify_admins_throttled("message-id", "message", "title")
         # then
-        args, _ = spy_cache_get_or_set.call_args
-        self.assertEqual(args[2], APPUTILS_ADMIN_NOTIFY_TIMEOUT)
+        _, kwargs = spy_throttle.call_args
+        self.assertEqual(kwargs["timeout"], APPUTILS_ADMIN_NOTIFY_TIMEOUT)
 
     @patch(MODULE_PATH + ".APPUTILS_ADMIN_NOTIFY_TIMEOUT", 123)
-    @patch(MODULE_PATH + ".cache.get_or_set", wraps=cache.get_or_set)
-    def test_should_use_timeout_setting_when_defined(self, spy_cache_get_or_set):
+    @patch("app_utils.allianceauth.throttle", wraps=throttle)
+    def test_should_use_timeout_setting_when_defined(self, spy_throttle):
         # given
         create_fake_user(
             1001, "Bruce Wayne", permissions=["auth.logging_notifications"]
@@ -118,5 +119,5 @@ class TestNotifyAdminsThrottled(TestCase):
         # when
         notify_admins_throttled("message-id", "message", "title")
         # then
-        args, _ = spy_cache_get_or_set.call_args
-        self.assertEqual(args[2], 123)
+        _, kwargs = spy_throttle.call_args
+        self.assertEqual(kwargs["timeout"], 123)

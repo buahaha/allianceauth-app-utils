@@ -18,6 +18,8 @@ if on_rtd:
 else:
     INSTALL_REQUIRES = ["allianceauth>=2.8.2"]
 
+INSTALL_REQUIRES += ["requests"]
+
 setup(
     name="allianceauth-app-utils",
     version=__version__,

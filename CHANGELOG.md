@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.7.0] - 2021-07-01
+
+### Added
+
+- helpers.throttle(): Allows calling any function throttled, e.g. to once per day
+- allianceauth.notify_throttled: Send notification throttled, e.g. to once a day only
+
+### Changed
+
+- Renamed `APP_UTILS_ADMIN_NOTIFY_TIMEOUT` to `APP_UTILS_NOTIFY_THROTTLED_TIMEOUT`
+
 ## [1.6.0] - 2021-06-29
 
 ### Changed

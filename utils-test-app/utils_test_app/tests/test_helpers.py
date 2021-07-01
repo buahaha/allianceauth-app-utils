@@ -1,6 +1,10 @@
+from time import time
+from unittest.mock import patch
+
+from django.core.cache import cache
 from django.test import TestCase
 
-from app_utils.helpers import humanize_number
+from app_utils.helpers import humanize_number, throttle
 
 
 class TestFormatisk(TestCase):
@@ -38,3 +42,39 @@ class TestFormatisk(TestCase):
         result = humanize_number("1234567890", precision=3)
         # then
         self.assertEqual(result, "1.235b")
+
+
+def my_func():
+    """Dummy function for testing throttle()"""
+    return "dummy"
+
+
+@patch(f"{__package__}.test_helpers.my_func", wraps=my_func)
+class TestThrottle(TestCase):
+    def setUp(self) -> None:
+        cache.clear()
+
+    def test_should_run_once(self, spy_my_func):
+        # when
+        result = throttle(my_func, "test-1", timeout=60)
+        # then
+        self.assertEqual(spy_my_func.call_count, 1)
+        self.assertEqual(result, "dummy")
+
+    def test_should_run_twice_only(self, spy_my_func):
+        # given
+        start = time()
+        # when
+        while time() < start + 1.1:
+            throttle(my_func, "test-1", timeout=1)
+        # then
+        self.assertEqual(spy_my_func.call_count, 2)
+
+    def test_should_once_per_context_id(self, spy_my_func):
+        # when
+        throttle(my_func, "test-1", timeout=60)
+        throttle(my_func, "test-2", timeout=60)
+        throttle(my_func, "test-1", timeout=60)
+        throttle(my_func, "test-2", timeout=60)
+        # then
+        self.assertEqual(spy_my_func.call_count, 2)

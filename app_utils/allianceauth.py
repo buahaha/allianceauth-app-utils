@@ -1,9 +1,8 @@
-import hashlib
 import re
+from functools import partial
 from typing import List
 
 from django.contrib.auth.models import Permission, User
-from django.core.cache import cache
 
 from allianceauth.notifications import notify
 from allianceauth.tests.auth_utils import AuthUtils
@@ -11,6 +10,7 @@ from allianceauth.views import NightModeRedirectView
 
 from ._app_settings import APPUTILS_ADMIN_NOTIFY_TIMEOUT
 from .django import users_with_permission
+from .helpers import throttle
 
 
 def notify_admins(message: str, title: str, level: str = "info") -> None:
@@ -41,6 +41,8 @@ def notify_admins_throttled(
     """Send notification to all admins, but limits the freqency
     for sending messages with the same message ID, e.g. to once per day.
 
+    If this function is called during a timeout the notification will simply be ignored.
+
     Args:
         message_id: ID representing this message
         message: Message text
@@ -49,18 +51,47 @@ def notify_admins_throttled(
         timeout: Time between each notification, e.g. 86400 = once per day.\
             When not provided uses system default,\
             which is 86400 and can also be set via this Django setting:\
-            APP_UTILS_ADMIN_NOTIFY_TIMEOUT
+            APP_UTILS_NOTIFY_THROTTLED_TIMEOUT
     """
-
-    def send_notification() -> str:
-        notify_admins(message=message, title=title, level=level)
-        return "THROTTLED"
-
     if not timeout:
         timeout = APPUTILS_ADMIN_NOTIFY_TIMEOUT
-    hashed_id = hashlib.md5(str(message_id).encode("utf-8")).hexdigest()
-    key = f"APP_UTILS_ADMIN_NOTIFY_THROTTLED_{hashed_id}"
-    cache.get_or_set(key, send_notification, timeout)
+    throttle(
+        func=partial(notify_admins, message, title, level),
+        context_id=message_id,
+        timeout=timeout,
+    )
+
+
+def notify_throttled(
+    message_id: str,
+    user: User,
+    title: str,
+    message: str,
+    level: str = "info",
+    timeout: int = None,
+):
+    """Send notification to user, but limits the freqency
+    for sending messages with the same message ID, e.g. to once per day.
+
+    If this function is called during a timeout the notification will simply be ignored.
+
+    Args:
+        message_id: ID representing this message
+        title: Message title
+        message: Message text
+        level: Notification level of the message.
+        timeout: Time between each notification, e.g. 86400 = once per day.\
+            When not provided uses system default,\
+            which is 86400 and can also be set via this Django setting:\
+            APP_UTILS_NOTIFY_THROTTLED_TIMEOUT
+    """
+    if not timeout:
+        timeout = APPUTILS_ADMIN_NOTIFY_TIMEOUT
+    throttle(
+        func=partial(notify, user, title, message, level),
+        context_id=message_id,
+        timeout=timeout,
+    )
 
 
 def is_night_mode(request) -> bool:
