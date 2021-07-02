@@ -5,7 +5,7 @@ from django.core.cache import cache
 from django.test import TestCase
 
 from allianceauth.notifications.models import Notification
-from app_utils._app_settings import APPUTILS_ADMIN_NOTIFY_TIMEOUT
+from app_utils._app_settings import APP_UTILS_NOTIFY_THROTTLED_TIMEOUT
 from app_utils.allianceauth import (
     create_fake_user,
     notify_admins,
@@ -106,9 +106,9 @@ class TestNotifyAdminsThrottled(TestCase):
         notify_admins_throttled("message-id", "message", "title")
         # then
         _, kwargs = spy_throttle.call_args
-        self.assertEqual(kwargs["timeout"], APPUTILS_ADMIN_NOTIFY_TIMEOUT)
+        self.assertEqual(kwargs["timeout"], APP_UTILS_NOTIFY_THROTTLED_TIMEOUT)
 
-    @patch(MODULE_PATH + ".APPUTILS_ADMIN_NOTIFY_TIMEOUT", 123)
+    @patch(MODULE_PATH + ".APP_UTILS_NOTIFY_THROTTLED_TIMEOUT", 123)
     @patch("app_utils.allianceauth.throttle", wraps=throttle)
     def test_should_use_timeout_setting_when_defined(self, spy_throttle):
         # given

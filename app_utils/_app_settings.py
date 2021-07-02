@@ -1,7 +1,9 @@
 from .django import clean_setting
 
-APPUTILS_ADMIN_NOTIFY_TIMEOUT = clean_setting("APPUTILS_ADMIN_NOTIFY_TIMEOUT", 86400)
-"""Timeout for throttled admin notifications in seconds."""
+APP_UTILS_NOTIFY_THROTTLED_TIMEOUT = clean_setting(
+    "APP_UTILS_NOTIFY_THROTTLED_TIMEOUT", 86400
+)
+"""Timeout for throttled notifications in seconds."""
 
 APPUTILS_ESI_ERROR_LIMIT_THRESHOLD = clean_setting(
     "APPUTILS_ESI_ERROR_LIMIT_THRESHOLD", 25

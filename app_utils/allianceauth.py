@@ -8,7 +8,7 @@ from allianceauth.notifications import notify
 from allianceauth.tests.auth_utils import AuthUtils
 from allianceauth.views import NightModeRedirectView
 
-from ._app_settings import APPUTILS_ADMIN_NOTIFY_TIMEOUT
+from ._app_settings import APP_UTILS_NOTIFY_THROTTLED_TIMEOUT
 from .django import users_with_permission
 from .helpers import throttle
 
@@ -54,7 +54,7 @@ def notify_admins_throttled(
             APP_UTILS_NOTIFY_THROTTLED_TIMEOUT
     """
     if not timeout:
-        timeout = APPUTILS_ADMIN_NOTIFY_TIMEOUT
+        timeout = APP_UTILS_NOTIFY_THROTTLED_TIMEOUT
     throttle(
         func=partial(notify_admins, message, title, level),
         context_id=message_id,
@@ -86,7 +86,7 @@ def notify_throttled(
             APP_UTILS_NOTIFY_THROTTLED_TIMEOUT
     """
     if not timeout:
-        timeout = APPUTILS_ADMIN_NOTIFY_TIMEOUT
+        timeout = APP_UTILS_NOTIFY_THROTTLED_TIMEOUT
     throttle(
         func=partial(notify, user, title, message, level),
         context_id=message_id,
