@@ -206,3 +206,26 @@ def _request_esi_status() -> requests.Response:
                 wait_secs = 0.1 * (random.uniform(2, 4) ** (retries - 1))
                 sleep(wait_secs)
     return r
+
+
+def retry_task_if_esi_is_down(self):
+    """Retry current celery task if ESI is not online or error threshold is exceeded.
+
+    This function has to be called from inside a celery task!
+
+    Args:
+        self: Current celery task from `@shared_task(bind=True)`
+    """
+    try:
+        fetch_esi_status().raise_for_status()
+    except EsiOffline as ex:
+        countdown = (10 + int(random.uniform(1, 10))) * 60
+        logger.warning(
+            "ESI appears to be offline. Trying again in %d minutes.", countdown
+        )
+        raise self.retry(countdown=countdown) from ex
+    except EsiErrorLimitExceeded as ex:
+        logger.warning(
+            "ESI error limit threshold reached. Trying again in %s seconds", ex.retry_in
+        )
+        raise self.retry(countdown=ex.retry_in) from ex

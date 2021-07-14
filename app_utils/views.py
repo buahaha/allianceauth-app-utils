@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.utils.functional import lazy
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
@@ -30,6 +30,18 @@ class HttpResponseNoContent(HttpResponse):
 
     def _get_content(self, value):
         pass
+
+
+class JSONResponseMixin:
+    """A mixin that can be used to render a JSON response for a class based view."""
+
+    def render_to_json_response(self, context, **response_kwargs):
+        """Return a JSON response, transforming 'context' to make the payload."""
+        return JsonResponse(self.get_data(context), safe=False, **response_kwargs)
+
+    def get_data(self, context):
+        """Return an object that will be serialized as JSON by json.dumps()."""
+        return context
 
 
 class BootstrapStyle(str, Enum):

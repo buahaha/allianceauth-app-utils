@@ -1,11 +1,18 @@
 import datetime as dt
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import requests_mock
+from celery.exceptions import Retry as CeleryRetry
 
 from django.test import TestCase
 
-from app_utils.esi import EsiErrorLimitExceeded, EsiOffline, EsiStatus, fetch_esi_status
+from app_utils.esi import (
+    EsiErrorLimitExceeded,
+    EsiOffline,
+    EsiStatus,
+    fetch_esi_status,
+    retry_task_if_esi_is_down,
+)
 
 MODULE_PATH = "app_utils.esi"
 
@@ -338,3 +345,40 @@ class TestFetchEsiStatus(TestCase):
             status = fetch_esi_status(ignore_daily_downtime=True)
         # then
         self.assertTrue(status.is_online)
+
+
+class TestRetryTaskIfEsiIsDown(TestCase):
+    @patch(MODULE_PATH + ".fetch_esi_status", lambda: EsiStatus(True, 99, 60))
+    def test_should_do_nothing_if_esi_is_ok(self):
+        # given
+        task = Mock()
+        # when
+        retry_task_if_esi_is_down(task)
+        # then
+        self.assertFalse(task.retry.called)
+
+    @patch(MODULE_PATH + ".fetch_esi_status", lambda: EsiStatus(False, 99, 60))
+    def test_should_retry_when_esi_is_offline(self):
+        # given
+        task = Mock()
+        task.retry.side_effect = CeleryRetry()
+        # when
+        with self.assertRaises(CeleryRetry):
+            retry_task_if_esi_is_down(task)
+        # then
+        self.assertTrue(task.retry.called)
+        _, kwargs = task.retry.call_args
+        self.assertTrue(kwargs["countdown"])
+
+    @patch(MODULE_PATH + ".fetch_esi_status", lambda: EsiStatus(True, 1, 60))
+    def test_should_retry_if_esi_error_threshold_exceeded(self):
+        # given
+        task = Mock()
+        task.retry.side_effect = CeleryRetry()
+        # when
+        with self.assertRaises(CeleryRetry):
+            retry_task_if_esi_is_down(task)
+        # then
+        self.assertTrue(task.retry.called)
+        _, kwargs = task.retry.call_args
+        self.assertGreaterEqual(kwargs["countdown"], 60)

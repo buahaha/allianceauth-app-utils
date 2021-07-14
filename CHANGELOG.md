@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.8.0] - 2021-07-14
+
+### Added
+
+- `esi.retry_task_if_esi_is_down`: Retry current celery task if ESI is not online or error threshold is exceeded.
+- `views.JSONResponseMixin`: A mixin that can be used to render a JSON response for a class based view.
+
+### Changed
+
+- Deprecated: `allianceauth.create_fake_user`. Use `testing.create_fake_user` instead.
+- Deprecated: `testing.BravadoOperationStub`. Use `esi_testing.BravadoOperationStub` instead.
+- Deprecated: `testing.BravadoResponseStub`. Use `esi_testing.BravadoResponseStub` instead.
+
 ## [1.7.1] - 2021-07-01
 
 ### Changed
@@ -17,8 +30,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- helpers.throttle(): Allows calling any function throttled, e.g. to once per day
-- allianceauth.notify_throttled: Send notification throttled, e.g. to once a day only
+- `helpers.throttle`: Allows calling any function throttled, e.g. to once per day
+- `allianceauth.notify_throttled`: Send notification throttled, e.g. to once a day only
 
 ## [1.6.0] - 2021-06-29
 

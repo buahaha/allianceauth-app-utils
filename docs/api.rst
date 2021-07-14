@@ -46,11 +46,10 @@ Helpers for working with ESI.
 .. autoclass:: app_utils.esi.EsiStatus
     :members: is_online, error_limit_remain, error_limit_reset, is_error_limit_exceeded, error_limit_reset_w_jitter, raise_for_status
 .. autofunction:: app_utils.esi.fetch_esi_status
+.. autofunction:: app_utils.esi.retry_task_if_esi_is_down
 
 esi_testing
 ===========
-
-Utilities for testing features using django-esi.
 
 .. automodule:: app_utils.esi_testing
     :members:
@@ -96,8 +95,6 @@ Utilities for making it easier to write tests.
 .. autofunction:: app_utils.testing.add_character_to_user
 .. autofunction:: app_utils.testing.add_character_to_user_2
 .. autofunction:: app_utils.testing.add_new_token
-.. autoclass:: app_utils.testing.BravadoOperationStub
-.. autoclass:: app_utils.testing.BravadoResponseStub
 .. autofunction:: app_utils.testing.generate_invalid_pk
 .. autoclass:: app_utils.testing.NoSocketsTestCase
 .. autofunction:: app_utils.testing.queryset_pks

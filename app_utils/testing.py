@@ -2,8 +2,9 @@ import datetime as dt
 import json
 import logging
 import os
+import re
 import socket
-from typing import Iterable, Tuple
+from typing import Iterable, List, Tuple
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -16,6 +17,7 @@ from allianceauth.eveonline.models import EveCharacter
 from allianceauth.tests.auth_utils import AuthUtils
 
 from .datetime import dt_eveformat
+from .esi_testing import BravadoOperationStub, BravadoResponseStub  # noqa: F401
 from .helpers import random_string
 
 
@@ -82,7 +84,7 @@ def set_test_logger(logger_name: str, name: str) -> object:
     return my_logger
 
 
-def add_new_token(user: User, character: EveCharacter, scopes: list) -> Token:
+def add_new_token(user: User, character: EveCharacter, scopes: List[str]) -> Token:
     """generates a new Token for the given character and adds it to the user"""
     return _store_as_Token(
         _generate_token(
@@ -95,7 +97,7 @@ def add_new_token(user: User, character: EveCharacter, scopes: list) -> Token:
 
 
 def create_user_from_evecharacter(
-    character_id: int, permissions: list = None, scopes: list = None
+    character_id: int, permissions: List[str] = None, scopes: List[str] = None
 ) -> Tuple[User, CharacterOwnership]:
     """Create new allianceauth user from EveCharacter object.
 
@@ -119,17 +121,17 @@ def add_character_to_user(
     user: User,
     character: EveCharacter,
     is_main: bool = False,
-    scopes: list = None,
+    scopes: List[str] = None,
     disconnect_signals: bool = False,
 ) -> CharacterOwnership:
     """Generates a token for the given Eve character and makes the given user it's owner
 
     Args:
-    - user: New character owner
-    - character: Character to add
-    - is_main: Will set character as the users's main when True
-    - scopes: List of scopes for the token
-    - disconnect_signals: Will disconnect signals temporarily when True
+        user: New character owner
+        character: Character to add
+        is_main: Will set character as the users's main when True
+        scopes: List of scopes for the token
+        disconnect_signals: Will disconnect signals temporarily when True
     """
     if not scopes:
         scopes = "publicData"
@@ -279,43 +281,40 @@ def multi_assert_not_in(items: Iterable, container: Iterable) -> bool:
     return True
 
 
-class BravadoResponseStub:
-    """Stub for IncomingResponse in bravado, e.g. for HTTPError exceptions"""
+def create_fake_user(
+    character_id: int,
+    character_name: str,
+    corporation_id: int = None,
+    corporation_name: str = None,
+    corporation_ticker: str = None,
+    alliance_id: int = None,
+    alliance_name: str = None,
+    permissions: List[str] = None,
+) -> User:
+    """Create a fake user incl. main character and (optional) permissions.
 
-    def __init__(
-        self, status_code, reason="", text="", headers=None, raw_bytes=None
-    ) -> None:
-        self.reason = reason
-        self.status_code = status_code
-        self.text = text
-        self.headers = headers if headers else dict()
-        self.raw_bytes = raw_bytes
-
-    def __str__(self):
-        return "{0} {1}".format(self.status_code, self.reason)
-
-
-class BravadoOperationStub:
-    """Stub to simulate the operation object return from bravado via django-esi"""
-
-    class RequestConfig:
-        def __init__(self, also_return_response):
-            self.also_return_response = also_return_response
-
-    class ResponseStub:
-        def __init__(self, headers):
-            self.headers = headers
-
-    def __init__(self, data, headers: dict = None, also_return_response: bool = False):
-        self._data = data
-        self._headers = headers if headers else {"x-pages": 1}
-        self.request_config = BravadoOperationStub.RequestConfig(also_return_response)
-
-    def result(self, **kwargs):
-        if self.request_config.also_return_response:
-            return [self._data, self.ResponseStub(self._headers)]
-        else:
-            return self._data
-
-    def results(self, **kwargs):
-        return self.result(**kwargs)
+    Will use default corporation and alliance if not set.
+    """
+    username = re.sub(r"[^\w\d@\.\+-]", "_", character_name)
+    user = AuthUtils.create_user(username)
+    if not corporation_id:
+        corporation_id = 2001
+        corporation_name = "Wayne Technologies Inc."
+        corporation_ticker = "WTE"
+    if corporation_id == 2001:
+        alliance_id = 3001
+        alliance_name = "Wayne Enterprises"
+    AuthUtils.add_main_character_2(
+        user=user,
+        name=character_name,
+        character_id=character_id,
+        corp_id=corporation_id,
+        corp_name=corporation_name,
+        corp_ticker=corporation_ticker,
+        alliance_id=alliance_id,
+        alliance_name=alliance_name,
+    )
+    if permissions:
+        perm_objs = [AuthUtils.get_permission_by_name(perm) for perm in permissions]
+        user = AuthUtils.add_permissions_to_user(perms=perm_objs, user=user)
+    return user
